@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../home/index.css';
 import Header from '../../Components/Header/Header';
@@ -7,25 +7,23 @@ import useDebounce from '../../utils/useDebounce.jsx';
 
 const Home = () => {
   const [card, setCard] = useState([]);
-  const [filteredCards, setFilteredCards] = useState([]);
   const [searchQuery, setSearchQuery] = useState(''); 
   const [region, setRegion] = useState(''); 
-  const debouncedQuery = useDebounce(searchQuery, 500); 
+  const debouncedQuery = useDebounce(searchQuery, 300); 
   const navigate = useNavigate();
 
  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await http.get(`/countries`);
+        const response = await http.get(`/countries?limit=15&skip=1`);
         if (response && response.data && response.data.data) {
           setCard(response.data.data); 
-          setFilteredCards(response.data.data); 
         } else {
-          console.error('Data not found:', response);
+          console.log(response);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.log(error);
       }
     };
 
@@ -33,38 +31,25 @@ const Home = () => {
   }, []);
 
  
-  useEffect(() => {
-    if (debouncedQuery || region) {
-      const fetchFilteredData = async () => {
-        try {
-          const response = await http.get(`/countries?region=${region}`);
-          if (response && response.data && response.data.data) {
-            const filtered = response.data.data.filter((crds) =>
-              crds.name.common.toLowerCase().includes(debouncedQuery.toLowerCase())
-            );
-            setFilteredCards(filtered);
-          } else {
-            setFilteredCards([]);
-          }
-        } catch (error) {
-          console.error('Error fetching filtered data:', error);
-        }
-      };
-
-      fetchFilteredData();
-    } else {
-      setFilteredCards(card); 
+  const filteredCards = useMemo(() => {
+    if (!debouncedQuery && !region) {
+      return card;
     }
+    return card.filter(crds => 
+      crds.name.common.toLowerCase().includes(debouncedQuery.toLowerCase()) &&
+      (region ? crds.region === region : true)
+    );
   }, [debouncedQuery, region, card]);
 
- 
+  
   const handleRegionChange = (event) => {
     setRegion(event.target.value); 
   };
 
-  function cardClick(slug) {
+  
+  const cardClick = useCallback((slug) => {
     navigate(`/card/${slug}`);
-  }
+  }, [navigate]);
 
   return (
     <div>
