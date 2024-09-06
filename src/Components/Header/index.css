@@ -37,3 +37,34 @@ svg{
     transform: translateY(8px);
     padding-left: 40px;
 }
+
+
+
+@media (min-width: 1024px) {
+    body {
+      font-size: 16px;
+    }
+  }
+  
+
+
+   
+
+        @media (max-width: 500px) {
+          .Headerpage h1{
+            font-size: 15px;
+            margin-top: 18px;       
+          }
+          .Headerpage p{
+            font-size: 13px;
+          }
+
+          @media (max-width: 360px) {
+            .Headerpage h1{
+                font-size: 13px;
+            }
+            .Headerpage p{
+                font-size: 10px;
+            }
+  }
+        }

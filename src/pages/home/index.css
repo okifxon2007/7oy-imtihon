@@ -285,5 +285,15 @@
           .carding{
             margin-left: 50px;
           }
+          @media (max-width: 360px) {
+            .carding{
+                margin-left: 50px;
+            }
+            .inp-op-df input{
+              width: 50%;
+          }
+           }
+
+
   }
 }}}
