@@ -7,19 +7,33 @@ import http from '../../utils/axios';
 const Card = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
-  const navigate = useNavigate('')
+  const [borderSlug, setBorderSlug] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
-    http.get(`countries/${slug}`)
-      .then(res => {
-        console.log(res.data);
-        setProduct(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, [slug]);
-  function handleback(){
-    navigate('/')
+    const fetchData = () => {
+      const endpoint = borderSlug ? `countries/${borderSlug}` : `countries/${slug}`;
+      
+      http.get(endpoint)
+        .then(res => {
+          console.log(res.data);
+          setProduct(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    fetchData();
+  }, [slug, borderSlug]);  
+
+  function handleBack() {
+    navigate('/');
+  }
+
+ 
+  function handleBorderClick(borderSlug) {
+    setBorderSlug(borderSlug); 
   }
 
   return (
@@ -28,9 +42,9 @@ const Card = () => {
       <div className="conta">
         <div className="cards-page">
           <div className="backbtn">
-            <button onClick={handleback}><i className="fas fa-arrow-left"></i> Back</button>
+            <button onClick={handleBack}><span><i className="fas fa-arrow-left"></i> Back</span></button>
           </div>
-       
+
           {product ? (
             <div className="cards-page-main">
               <div className="cards-img">
@@ -57,11 +71,15 @@ const Card = () => {
                   </div>
                 </div>
                 <div className="bottom-par">
-                <p>Border Countries:</p>
+                  <p>Border Countries:</p>
                   <ul className="border-list">
                     {product.borders.length > 0 ? 
                       product.borders.map((border, index) => (
-                        <li key={index} className="border-item">
+                        <li 
+                          key={index} 
+                          className="border-item"
+                          onClick={() => handleBorderClick(border.slug)}  
+                        >
                           {border.common}
                         </li>
                       )) 

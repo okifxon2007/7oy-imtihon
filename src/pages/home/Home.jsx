@@ -9,7 +9,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    http.get('/countries')
+    http.get(`/countries`)
       .then((res) => {
         setcard(res.data.data);
       })
