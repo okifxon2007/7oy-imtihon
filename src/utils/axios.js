@@ -5,10 +5,10 @@ const http = axios.create({
   timeout: 5000,
 });
 
-// Request Interceptor
+
 http.interceptors.request.use(
   (config) => {
-    // So'rov oldidan biror o'zgarish yoki token qo'shish
+    
     config.headers['Authorization'] = 'Bearer your-token-here';
     return config;
   },
@@ -17,7 +17,7 @@ http.interceptors.request.use(
   }
 );
 
-// Response Interceptor
+
 http.interceptors.response.use(
   (response) => {
     return response;
@@ -28,3 +28,27 @@ http.interceptors.response.use(
 );
 
 export default http;
+
+
+// constructor function
+// function User = (name, age){
+//   this.name = name
+//   this.age = age
+// }
+// const user = new User('lola', 35);
+
+
+// function createuser(name, age){
+//   return{
+//     name:name,
+//     age:age
+//   }
+// }
+
+
+// class Car{
+//   constructor(name, age){
+//     this.name = name,
+//     this.age = age
+//   }
+// }

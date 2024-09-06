@@ -13,7 +13,7 @@ const Card = () => {
   useEffect(() => {
     const fetchData = () => {
       const endpoint = borderSlug ? `countries/${borderSlug}` : `countries/${slug}`;
-      
+
       http.get(endpoint)
         .then(res => {
           console.log(res.data);
@@ -25,15 +25,15 @@ const Card = () => {
     };
 
     fetchData();
-  }, [slug, borderSlug]);  
+  }, [slug, borderSlug]);
 
   function handleBack() {
     navigate('/');
   }
 
- 
+
   function handleBorderClick(borderSlug) {
-    setBorderSlug(borderSlug); 
+    setBorderSlug(borderSlug);
   }
 
   return (
@@ -51,40 +51,40 @@ const Card = () => {
                 {product.flags && product.flags.png ? (
                   <img src={product.flags.png} alt={product.name?.common} />
                 ) : (
-                  <p>No flag image available</p>
+                  <p>...</p>
                 )}
               </div>
               <div className='cards-par'>
-                <h1>{product.name?.common || 'Country Name'}</h1>
+                <h1>{product.name?.common || 'Country Name'}</h1> <br />
                 <div className="fff-df">
                   <div className="fff">
-                    <p>Native Name :<span>{product.name?.nativeName || 'N/A'}</span></p>
-                    <p>Population :<span>{product.population || 'N/A'}</span></p>
-                    <p>Region :<span>{product.region || 'N/A'}</span></p>
-                    <p>Sub Region :<span>{product.subregion }</span></p>
-                    <p>Capital :<span>{product.capital || 'N/A'}</span></p>
+                    <p>Native Name :<span>{product.name?.nativeName}</span></p>
+                    <p>Population :<span>{product.population}</span></p>
+                    <p>Region :<span>{product.region }</span></p>
+                    <p>Sub Region :<span>{product.subregion}</span></p>
+                    <p>Capital :<span>{product.capital }</span></p>
                   </div>
                   <div className="ff">
-                    <p>Top Level Domain :<span>{product.topLevelDomain?.[0] || 'N/A'}</span></p>
+                    <p>Top Level Domain :<span>{product.topLevelDomain?.[0]}</span></p>
                     <p>Currencies :<span>{product.currencies}</span></p>
                     <p>Languages :<span>{product.languages}</span></p>
                   </div>
-                </div>
+                </div> <br />
                 <div className="bottom-par">
                   <p>Border Countries:</p>
                   <ul className="border-list">
-                    {product.borders.length > 0 ? 
+                    {product.borders.length > 0 ?
                       product.borders.map((border, index) => (
-                        <li 
-                          key={index} 
+                        <li
+                          key={index}
                           className="border-item"
-                          onClick={() => handleBorderClick(border.slug)}  
+                          onClick={() => handleBorderClick(border.slug)}
                         >
                           {border.common}
                         </li>
-                      )) 
-                      : 
-                      <li>N/A</li>
+                      ))
+                      :
+                      <li></li>
                     }
                   </ul>
                 </div>
@@ -92,32 +92,32 @@ const Card = () => {
             </div>
           ) : (
             <div className="main">
-            <div className="up">
-              <div className="loaders">
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-                <div className="loader"></div>
-              </div>
-              <div className="loadersB">
-                <div className="loaderA"><div className="ball0"></div></div>
-                <div className="loaderA"><div className="ball1"></div></div>
-                <div className="loaderA"><div className="ball2"></div></div>
-                <div className="loaderA"><div className="ball3"></div></div>
-                <div className="loaderA"><div className="ball4"></div></div>
-                <div className="loaderA"><div className="ball5"></div></div>
-                <div className="loaderA"><div className="ball6"></div></div>
-                <div className="loaderA"><div className="ball7"></div></div>
-                <div className="loaderA"><div className="ball8"></div></div>
+              <div className="up">
+                <div className="loaders">
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                </div>
+                <div className="loadersB">
+                  <div className="loaderA"><div className="ball0"></div></div>
+                  <div className="loaderA"><div className="ball1"></div></div>
+                  <div className="loaderA"><div className="ball2"></div></div>
+                  <div className="loaderA"><div className="ball3"></div></div>
+                  <div className="loaderA"><div className="ball4"></div></div>
+                  <div className="loaderA"><div className="ball5"></div></div>
+                  <div className="loaderA"><div className="ball6"></div></div>
+                  <div className="loaderA"><div className="ball7"></div></div>
+                  <div className="loaderA"><div className="ball8"></div></div>
+                </div>
               </div>
             </div>
-          </div>
           )}
         </div>
       </div>

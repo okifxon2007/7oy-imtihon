@@ -1,37 +1,53 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import '../home/index.css';
 import Header from '../../Components/Header/Header';
 import http from '../../utils/axios.js';
+import useDebounce from '../../utils/useDebounce.jsx';
 
 const Home = () => {
   const [card, setcard] = useState([]);
   const navigate = useNavigate();
+  const [srch, setsrch] = useState('');
+  const query = useDebounce(srch, 300);
 
-  useEffect(() => {
+  useEffect(() => { 
+  if (!query) {
     http.get(`/countries`)
       .then((res) => {
         setcard(res.data.data);
       })
       .catch((err) => {
-        console.error(err); 
+        console.error(err);
       });
-  }, []);
+  } else {
+    http.get(`/countries/search?query=${query}`)
+      .then(res => {
+        setcard(res.data.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+}, [query]);
 
-  
   function cardclick(slug) {
-   
     navigate(`/card/${slug}`);
   }
+
+  const handleInputChange = (e) => {
+    setsrch(e.target.value);
+  };
 
   return (
     <div>
       <Header></Header>
-      <div className="conta">
+      <div className="contai">
         <div className="inp-op-df">
           <form className='formaikki'>
             <i className="fa-solid fa-magnifying-glass"></i>
-            <input type="search" placeholder='Search for a country...' />
+            <input value={srch}
+              onChange={handleInputChange} type="search" placeholder='Search for a country...' />
           </form>
           <select>
             <option value="Filter by Region">Filter by Region</option>
@@ -49,17 +65,18 @@ const Home = () => {
             card.length > 0 ? (
               card.map((crds, index) => {
                 return (
-                  <div 
-                    onClick={() => cardclick(crds.name.slug)} 
-                    className="carding" 
+                  <div
+                    onClick={() => cardclick(crds.name.slug)}
+                    className="carding"
                     key={index}
                   >
-                    <img src={crds.flags.png} alt={crds.name.common} /> 
+                    <img src={crds.flags.png} alt={crds.name.common} />
                     <div className="carding-par">
-                      <h2>{crds.name.common}</h2> 
+                      <br />
+                      <h2>{crds.name.common}</h2>
                       <p>Population: <span>{crds.population}</span></p>
                       <p>Region: <span>{crds.region}</span></p>
-                      <p>Capital: <span>{crds.capital && crds.capital[0]}</span></p> 
+                      <p>Capital: <span>{crds.capital && crds.capital[0]}</span></p>
                     </div>
                   </div>
                 );

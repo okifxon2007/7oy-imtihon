@@ -17,6 +17,7 @@
     margin-top: 40px;
     flex-wrap: wrap;
     gap: 80px;
+    
 }
 .cards-img img{
     width: 540px;
@@ -25,16 +26,25 @@
     object-fit: cover;
     
 }
+.cards-page{
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+}
 .fff-df{
     flex-wrap: wrap;
     margin-left: 10px;
     display: flex;
-    gap: 30px;
+    gap: 50px;
+}
+.fff{
+    width: 300px;
 }
 .cards-par h1{
     margin-top: 30px;
     margin-left: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 35px;
 }
 .fff p{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -51,7 +61,8 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 600;
     font-size: 16px;
-    margin-left: 0px;
+
+    
 }
 .ff span{
     font-weight: 400;
