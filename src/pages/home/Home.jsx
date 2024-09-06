@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import '../home/index.css';
 import Header from '../../Components/Header/Header';
 import http from '../../utils/axios.js';
-import useDebounce from '../../utils/useDebounce.jsx'; 
+import useDebounce from '../../utils/useDebounce.jsx';
 
 const Home = () => {
-  const [card, setCard] = useState([]); 
-  const [filteredCards, setFilteredCards] = useState([]); 
+  const [card, setCard] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
   const [searchQuery, setSearchQuery] = useState(''); 
+  const [region, setRegion] = useState(''); 
   const debouncedQuery = useDebounce(searchQuery, 500); 
   const navigate = useNavigate();
 
@@ -19,29 +20,47 @@ const Home = () => {
         const response = await http.get(`/countries`);
         if (response && response.data && response.data.data) {
           setCard(response.data.data); 
-          setFilteredCards(response.data.data);
+          setFilteredCards(response.data.data); 
         } else {
-          console.error(response);
+          console.error('Data not found:', response);
         }
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
   }, []);
 
-  
+ 
   useEffect(() => {
-    if (debouncedQuery) {
-      const filtered = card.filter((crds) =>
-        crds.name.common.toLowerCase().includes(debouncedQuery.toLowerCase())
-      );
-      setFilteredCards(filtered); 
+    if (debouncedQuery || region) {
+      const fetchFilteredData = async () => {
+        try {
+          const response = await http.get(`/countries?region=${region}`);
+          if (response && response.data && response.data.data) {
+            const filtered = response.data.data.filter((crds) =>
+              crds.name.common.toLowerCase().includes(debouncedQuery.toLowerCase())
+            );
+            setFilteredCards(filtered);
+          } else {
+            setFilteredCards([]);
+          }
+        } catch (error) {
+          console.error('Error fetching filtered data:', error);
+        }
+      };
+
+      fetchFilteredData();
     } else {
       setFilteredCards(card); 
     }
-  }, [debouncedQuery, card]);
+  }, [debouncedQuery, region, card]);
+
+ 
+  const handleRegionChange = (event) => {
+    setRegion(event.target.value); 
+  };
 
   function cardClick(slug) {
     navigate(`/card/${slug}`);
@@ -61,8 +80,8 @@ const Home = () => {
               onChange={(e) => setSearchQuery(e.target.value)} 
             />
           </form>
-          <select>
-            <option value="Filter by Region">Filter by Region</option>
+          <select onChange={handleRegionChange}>
+            <option value="">Filter by Region</option>
             <option value="Africa">Africa</option>
             <option value="America">America</option>
             <option value="Asia">Asia</option>
