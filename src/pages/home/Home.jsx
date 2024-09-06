@@ -3,51 +3,63 @@ import { useNavigate } from 'react-router-dom';
 import '../home/index.css';
 import Header from '../../Components/Header/Header';
 import http from '../../utils/axios.js';
-import useDebounce from '../../utils/useDebounce.jsx';
+import useDebounce from '../../utils/useDebounce.jsx'; 
 
 const Home = () => {
-  const [card, setcard] = useState([]);
+  const [card, setCard] = useState([]); 
+  const [filteredCards, setFilteredCards] = useState([]); 
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const debouncedQuery = useDebounce(searchQuery, 500); 
   const navigate = useNavigate();
-  const [srch, setsrch] = useState('');
-  const query = useDebounce(srch, 300);
 
-  useEffect(() => { 
-  if (!query) {
-    http.get(`/countries`)
-      .then((res) => {
-        setcard(res.data.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  } else {
-    http.get(`/countries/search?query=${query}`)
-      .then(res => {
-        setcard(res.data.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-}, [query]);
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await http.get(`/countries`);
+        if (response && response.data && response.data.data) {
+          setCard(response.data.data); 
+          setFilteredCards(response.data.data);
+        } else {
+          console.error(response);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  function cardclick(slug) {
+    fetchData();
+  }, []);
+
+  
+  useEffect(() => {
+    if (debouncedQuery) {
+      const filtered = card.filter((crds) =>
+        crds.name.common.toLowerCase().includes(debouncedQuery.toLowerCase())
+      );
+      setFilteredCards(filtered); 
+    } else {
+      setFilteredCards(card); 
+    }
+  }, [debouncedQuery, card]);
+
+  function cardClick(slug) {
     navigate(`/card/${slug}`);
   }
 
-  const handleInputChange = (e) => {
-    setsrch(e.target.value);
-  };
-
   return (
     <div>
-      <Header></Header>
+      <Header />
       <div className="contai">
         <div className="inp-op-df">
-          <form className='formaikki'>
+          <form className="formaikki">
             <i className="fa-solid fa-magnifying-glass"></i>
-            <input value={srch}
-              onChange={handleInputChange} type="search" placeholder='Search for a country...' />
+            <input 
+              type="search" 
+              placeholder="Search for a country..." 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+            />
           </form>
           <select>
             <option value="Filter by Region">Filter by Region</option>
@@ -61,60 +73,56 @@ const Home = () => {
       </div>
       <div className="conta">
         <div className="carding-df">
-          {
-            card.length > 0 ? (
-              card.map((crds, index) => {
-                return (
-                  <div
-                    onClick={() => cardclick(crds.name.slug)}
-                    className="carding"
-                    key={index}
-                  >
-                    <img src={crds.flags.png} alt={crds.name.common} />
-                    <div className="carding-par">
-                      <br />
-                      <h2>{crds.name.common}</h2>
-                      <p>Population: <span>{crds.population}</span></p>
-                      <p>Region: <span>{crds.region}</span></p>
-                      <p>Capital: <span>{crds.capital && crds.capital[0]}</span></p>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="main">
-                <div className="up">
-                  <div className="loaders">
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                    <div className="loader"></div>
-                  </div>
-                  <div className="loadersB">
-                    <div className="loaderA"><div className="ball0"></div></div>
-                    <div className="loaderA"><div className="ball1"></div></div>
-                    <div className="loaderA"><div className="ball2"></div></div>
-                    <div className="loaderA"><div className="ball3"></div></div>
-                    <div className="loaderA"><div className="ball4"></div></div>
-                    <div className="loaderA"><div className="ball5"></div></div>
-                    <div className="loaderA"><div className="ball6"></div></div>
-                    <div className="loaderA"><div className="ball7"></div></div>
-                    <div className="loaderA"><div className="ball8"></div></div>
-                  </div>
+          {filteredCards.length > 0 ? (
+            filteredCards.map((crds, index) => (
+              <div
+                onClick={() => cardClick(crds.name.slug)}
+                className="carding"
+                key={index}
+              >
+                <img src={crds.flags.png} alt={crds.name.common} />
+                <div className="carding-par">
+                  <br />
+                  <h2>{crds.name.common}</h2>
+                  <p>Population: <span>{crds.population}</span></p>
+                  <p>Region: <span>{crds.region}</span></p>
+                  <p>Capital: <span>{crds.capital && crds.capital[0]}</span></p>
                 </div>
               </div>
-            )
-          }
+            ))
+          ) : (
+            <div className="main">
+              <div className="up">
+                <div className="loaders">
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                  <div className="loader"></div>
+                </div>
+                <div className="loadersB">
+                  <div className="loaderA"><div className="ball0"></div></div>
+                  <div className="loaderA"><div className="ball1"></div></div>
+                  <div className="loaderA"><div className="ball2"></div></div>
+                  <div className="loaderA"><div className="ball3"></div></div>
+                  <div className="loaderA"><div className="ball4"></div></div>
+                  <div className="loaderA"><div className="ball5"></div></div>
+                  <div className="loaderA"><div className="ball6"></div></div>
+                  <div className="loaderA"><div className="ball7"></div></div>
+                  <div className="loaderA"><div className="ball8"></div></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Home;
