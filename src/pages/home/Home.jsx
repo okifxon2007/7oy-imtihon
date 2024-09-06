@@ -16,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await http.get(`/countries?limit=15&skip=1`);
+        const response = await http.get(`/countries`);
         if (response && response.data && response.data.data) {
           setCard(response.data.data); 
         } else {
